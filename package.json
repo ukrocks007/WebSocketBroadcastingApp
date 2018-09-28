@@ -1,0 +1,25 @@
+{
+  "name": "websocketbroadcastingapp",
+  "version": "1.0.0",
+  "description": "Realtime backend application with the following features :-  - Should be able to receive JSON messages via a queuing mechanism - Accept web socket subscription from the web/app clients - Pick up the received messages from the queue and broadcast to the subscribed clients",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ukrocks007/WebSocketBroadcastingApp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ukrocks007/WebSocketBroadcastingApp/issues"
+  },
+  "homepage": "https://github.com/ukrocks007/WebSocketBroadcastingApp#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.16.3",
+    "websocket": "^1.0.28"
+  }
+}
