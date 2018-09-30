@@ -22,28 +22,18 @@ wsServer = new WebSocketServer({
 wsServer.on('request', function (request) {
     console.log((new Date()) + ' Connection from origin '
         + request.origin + '.');
-    // accept connection - you should check 'request.origin' to
-    // make sure that client is connecting from your website
-    // (http://en.wikipedia.org/wiki/Same_origin_policy)
     var connection = request.accept(null, request.origin);
-    // we need to know client index to remove them on 'close' event
+
     var index = clients.push(connection) - 1;
-    var userName = false;
-    var userColor = false;
+
     console.log((new Date()) + ' Connection accepted.');
-    // send back chat history
-    if (history.length > 0) {
-        connection.sendUTF(
-            JSON.stringify({ type: 'history', data: history }));
-    }
-    // user sent some message
-    connection.on('message', function (message) {
-    });
+
+    connection.on('message', function (message) { });
+
     // user disconnected
     connection.on('close', function (connection) {
         if (userName !== false && userColor !== false) {
-            console.log((new Date()) + " Peer "
-                + connection.remoteAddress + " disconnected.");
+            console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
             // remove user from the list of connected clients
             clients.splice(index, 1);
         }
@@ -62,6 +52,8 @@ function dequeueAndBroadcast() {
 }
 dequeueAndBroadcast();
 
+//REST API to accept messages
+
 app.use(express.urlencoded({
     extended: true
 }));
@@ -70,12 +62,17 @@ app.use(express.json());
 app.post('/message/enqueue', (req, res) => {
     if (req.body.message) {
         messageQueue.enqueue(req.body.message);
+        console.log("(" + req.body.message + ") " + "added to queue");
         res.status(200).send("Message added to queue")
     }
     else {
         res.status(404).send("Incorrent input");
     }
 });
+
+app.all('*', (req, res) => {
+    res.status(404).send("Invalid endpoint");
+})
 
 const port = process.env.PORT || 3000;
 
