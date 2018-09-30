@@ -26,25 +26,30 @@ wsServer.on('request', function (request) {
 
     var index = clients.push(connection) - 1;
 
+    console.log("connection count: "+clients.length);
+
     console.log((new Date()) + ' Connection accepted.');
 
     connection.on('message', function (message) { });
 
     // user disconnected
     connection.on('close', function (connection) {
-        if (userName !== false && userColor !== false) {
-            console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
-            // remove user from the list of connected clients
-            clients.splice(index, 1);
-        }
+        console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
+        // remove user from the list of connected clients
+        clients.splice(index, 1);
     });
 });
 
 function dequeueAndBroadcast() {
     if (!messageQueue.isEmpty()) {
+        var meessage = messageQueue.dequeue();
         for (var i = 0; i < clients.length; i++) {
             if (clients[i].connected) {
-                clients[i].sendUTF(messageQueue.dequeue().toString());
+                messageJSON = {
+                    id: (i + 1),
+                    message: meessage,
+                };
+                clients[i].send(JSON.stringify(messageJSON));
             }
         }
     }
